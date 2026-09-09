@@ -46,7 +46,7 @@ class ModelRouter:
         self.routes = routes or {}
 
     @classmethod
-    def from_env(cls, default_model: str) -> "ModelRouter":
+    def from_env(cls, default_model: str) -> ModelRouter:
         raw = os.getenv("SHORT_RESEARCH_MODEL_ROUTES_JSON", "").strip()
         if not raw:
             return cls(default_model)
