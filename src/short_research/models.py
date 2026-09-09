@@ -62,6 +62,7 @@ class CharacterSpec(BaseModel):
     role: str
     visual_description: str
     consistency_notes: str = ""
+    immutable_id: str = ""
 
 
 class SceneSpec(BaseModel):
@@ -69,7 +70,22 @@ class SceneSpec(BaseModel):
     start_second: float
     end_second: float
     purpose: str
-    narration: str
+    narration: str = ""
+
+    # Story-logic fields. Optional defaults preserve compatibility with older factual packages.
+    start_state: str = ""
+    obstacle: str = ""
+    decision: str = ""
+    action: str = ""
+    consequence: str = ""
+    end_state: str = ""
+
+    # Continuity fields used by image/video generation.
+    characters_present: list[str] = Field(default_factory=list)
+    character_positions: str = ""
+    location: str = ""
+    screen_direction: str = ""
+
     visual_direction: str
     camera: str
     on_screen_text: str = ""
@@ -94,6 +110,9 @@ class ShortPackage(BaseModel):
     youtube_description: str
     hashtags: list[str] = Field(default_factory=list)
     research: ResearchBrief
+    story_mode: str = "factual_narrated"
+    continuity_rules: list[str] = Field(default_factory=list)
+    location_map: str = ""
 
 
 class SceneCritique(BaseModel):
@@ -101,6 +120,11 @@ class SceneCritique(BaseModel):
     retention_score: int = Field(ge=0, le=100)
     visual_novelty_score: int = Field(ge=0, le=100)
     clarity_score: int = Field(ge=0, le=100)
+    causality_score: int = Field(default=100, ge=0, le=100)
+    character_consistency_score: int = Field(default=100, ge=0, le=100)
+    spatial_continuity_score: int = Field(default=100, ge=0, le=100)
+    silent_readability_score: int = Field(default=100, ge=0, le=100)
+    emotional_payoff_score: int = Field(default=100, ge=0, le=100)
     issue: str = ""
     fix: str = ""
 
@@ -112,6 +136,11 @@ class ShortCritique(BaseModel):
     escalation_score: int = Field(ge=0, le=100)
     payoff_score: int = Field(ge=0, le=100)
     factual_discipline_score: int = Field(ge=0, le=100)
+    causality_score: int = Field(default=100, ge=0, le=100)
+    character_consistency_score: int = Field(default=100, ge=0, le=100)
+    spatial_continuity_score: int = Field(default=100, ge=0, le=100)
+    silent_readability_score: int = Field(default=100, ge=0, le=100)
+    emotional_payoff_score: int = Field(default=100, ge=0, le=100)
     overall_score: int = Field(ge=0, le=100)
     strengths: list[str] = Field(default_factory=list)
     scene_critiques: list[SceneCritique] = Field(default_factory=list)

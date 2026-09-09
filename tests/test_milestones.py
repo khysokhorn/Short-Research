@@ -1,6 +1,6 @@
 from short_research.arcreel import ArcReelClient
 from short_research.llm import ModelCandidate, ModelRouter
-from short_research.models import AngleCandidate, AngleCompetition, HookCandidate
+from short_research.models import AngleCandidate, AngleCompetition, HookCandidate, SceneSpec
 from short_research.presets import BUILTIN_PRESETS, load_preset
 
 
@@ -56,6 +56,28 @@ def test_builtin_preset_loads() -> None:
     preset = load_preset("micro-disaster")
     assert preset is BUILTIN_PRESETS["micro-disaster"]
     assert "microscopic" in preset.style
+
+
+def test_silent_rescue_preset_enforces_visual_storytelling() -> None:
+    preset = load_preset("silent-rescue")
+    assert preset is BUILTIN_PRESETS["silent-rescue"]
+    assert any("understandable without narration" in rule for rule in preset.writer_rules)
+    assert any("character count" in pattern for pattern in preset.banned_patterns)
+
+
+def test_scene_spec_continuity_fields_are_backward_compatible() -> None:
+    scene = SceneSpec(
+        index=1,
+        start_second=0,
+        end_second=4,
+        purpose="hook",
+        visual_direction="A character runs from visible danger.",
+        camera="tracking shot",
+    )
+    assert scene.narration == ""
+    assert scene.characters_present == []
+    assert scene.start_state == ""
+    assert scene.end_state == ""
 
 
 def test_angle_competition_selected_indices() -> None:
