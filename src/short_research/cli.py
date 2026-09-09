@@ -35,7 +35,10 @@ def generate(
     output: Annotated[Path, typer.Option("--output", "-o")] = DEFAULT_OUTPUT,
     reference: Annotated[
         str | None,
-        typer.Option("--reference", help="YouTube URL or local reference video."),
+        typer.Option(
+            "--reference",
+            help="Facebook/YouTube/yt-dlp-supported URL or local reference video.",
+        ),
     ] = None,
     reference_visual: Annotated[
         bool,
@@ -107,7 +110,10 @@ def generate(
 
 @app.command("analyze-reference")
 def analyze_reference(
-    source: Annotated[str, typer.Argument(help="YouTube URL or local video path.")],
+    source: Annotated[
+        str,
+        typer.Argument(help="Facebook/YouTube/yt-dlp-supported URL or local video path."),
+    ],
     visual: Annotated[
         bool,
         typer.Option("--visual", help="Download/sample frames for multimodal analysis."),
