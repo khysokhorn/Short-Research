@@ -22,9 +22,9 @@ CRITIC_SYSTEM = """You are a demanding short-form retention editor. Score the sc
 context, generic visuals, repeated beats, weak escalation, confusing narration, unsupported claims, and a payoff
 that merely repeats the hook. Scores must be useful, not inflated. Provide concrete rewrite instructions."""
 
-REWRITE_SYSTEM = """You are a surgical YouTube Shorts rewrite editor. Rewrite the supplied package using the critic's
-priorities. Preserve verified facts, uncertainty, requested runtime, character continuity, and the winning angle.
-Fix weak scenes rather than changing things that already work. Return a complete replacement package."""
+REWRITE_SYSTEM = """You are a surgical YouTube Shorts rewrite editor. Rewrite only what is weak according to the
+critic. Preserve verified facts, uncertainty, requested runtime, character continuity, winning hook/angle/payoff,
+and every strong scene. Return a complete replacement package even when only a subset of scenes changes."""
 
 PACKAGING_SYSTEM = """You package YouTube Shorts for discovery without misleading clickbait. Produce meaningfully
 different factual title variants and thumbnail concepts. Thumbnail concepts must be visually legible on mobile,
@@ -87,14 +87,33 @@ RESEARCH:\n{json.dumps(brief.model_dump(exclude={'sources'}), ensure_ascii=False
         )
         return ShortCritique.model_validate(result.model_dump())
 
-    def rewrite(self, package: ShortPackage, critique: ShortCritique) -> ShortPackage:
+    def rewrite(
+        self,
+        package: ShortPackage,
+        critique: ShortCritique,
+        *,
+        scene_threshold: int = 75,
+    ) -> ShortPackage:
+        weak_scene_indices = {
+            item.scene_index
+            for item in critique.scene_critiques
+            if min(item.retention_score, item.visual_novelty_score, item.clarity_score) < scene_threshold
+        }
+        weak_instruction = (
+            f"Only scenes with these indices may be replaced: {sorted(weak_scene_indices)}. "
+            "All other scene objects must stay semantically unchanged."
+            if weak_scene_indices
+            else "No individual weak scene was identified; make only the minimum global changes needed."
+        )
+        package_for_prompt = package.model_dump_json(indent=2, exclude={"research": {"sources"}})
         prompt = f"""Rewrite the package so its weakest dimensions improve materially.
 Do not change topic, winning hook, winning angle, payoff, duration, audience, or factual guardrails.
+{weak_instruction}
 Keep scene timing chronological and ending close to {package.duration_seconds} seconds. Return the entire ShortPackage.
 
 CRITIQUE:\n{critique.model_dump_json(indent=2)}
 
-PACKAGE:\n{package.model_dump_json(indent=2)}
+PACKAGE:\n{package_for_prompt}
 """
         result = self.llm.complete_json(
             system=REWRITE_SYSTEM,
@@ -104,6 +123,21 @@ PACKAGE:\n{package.model_dump_json(indent=2)}
             temperature=0.55,
         )
         rewritten = ShortPackage.model_validate(result.model_dump())
+
+        if weak_scene_indices:
+            replacements = {scene.index: scene for scene in rewritten.scenes}
+            merged_scenes = []
+            for original in package.scenes:
+                replacement = replacements.get(original.index)
+                if original.index in weak_scene_indices and replacement is not None:
+                    replacement.start_second = original.start_second
+                    replacement.end_second = original.end_second
+                    merged_scenes.append(replacement)
+                else:
+                    merged_scenes.append(original)
+            rewritten.scenes = merged_scenes
+            rewritten.narration = " ".join(scene.narration.strip() for scene in merged_scenes if scene.narration.strip())
+
         rewritten.topic = package.topic
         rewritten.hook = package.hook
         rewritten.core_angle = package.core_angle
