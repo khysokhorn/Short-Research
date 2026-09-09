@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from dotenv import load_dotenv
@@ -13,25 +14,47 @@ from .pipeline import ShortResearchPipeline, export_package, export_run
 from .presets import BUILTIN_PRESETS, load_preset
 from .video_analysis import PostRenderCritic, ReferenceVideoAnalyzer
 
+DEFAULT_OUTPUT = Path("output")
+DEFAULT_REFERENCE_ANALYSIS = Path("reference-analysis.json")
+DEFAULT_POST_RENDER_CRITIQUE = Path("post-render-critique.json")
+
 app = typer.Typer(no_args_is_help=True, help="Research, critique and build ArcReel-ready YouTube Shorts.")
 
 
 @app.command()
 def generate(
-    topic: str = typer.Argument(..., help="Topic or story idea to research."),
-    duration: int = typer.Option(45, "--duration", "-d", min=15, max=180),
-    style: str = typer.Option("cinematic fun fact", "--style"),
-    audience: str = typer.Option("general YouTube Shorts audience", "--audience"),
-    preset: str | None = typer.Option(None, "--preset", help="Built-in preset name or JSON preset path."),
-    max_sources: int = typer.Option(6, "--max-sources", min=2, max=12),
-    output: Path = typer.Option(Path("output"), "--output", "-o"),
-    reference: str | None = typer.Option(None, "--reference", help="YouTube URL or local reference video."),
-    reference_visual: bool = typer.Option(False, "--reference-visual", help="Also sample visual frames."),
-    critic_threshold: int = typer.Option(78, "--critic-threshold", min=0, max=100),
-    rewrite_passes: int = typer.Option(2, "--rewrite-passes", min=0, max=5),
-    basic: bool = typer.Option(False, "--basic", help="Skip angle competition/critic/packaging stages."),
-    push_arcreel: bool = typer.Option(False, "--push-arcreel", help="Create/upload directly to ArcReel."),
-    trigger_arcreel: bool = typer.Option(False, "--trigger-arcreel", help="Push and start ArcReel /video-workflow."),
+    topic: Annotated[str, typer.Argument(help="Topic or story idea to research.")],
+    duration: Annotated[int, typer.Option("--duration", "-d", min=15, max=180)] = 45,
+    style: Annotated[str, typer.Option("--style")] = "cinematic fun fact",
+    audience: Annotated[str, typer.Option("--audience")] = "general YouTube Shorts audience",
+    preset: Annotated[
+        str | None,
+        typer.Option("--preset", help="Built-in preset name or JSON preset path."),
+    ] = None,
+    max_sources: Annotated[int, typer.Option("--max-sources", min=2, max=12)] = 6,
+    output: Annotated[Path, typer.Option("--output", "-o")] = DEFAULT_OUTPUT,
+    reference: Annotated[
+        str | None,
+        typer.Option("--reference", help="YouTube URL or local reference video."),
+    ] = None,
+    reference_visual: Annotated[
+        bool,
+        typer.Option("--reference-visual", help="Also sample visual frames."),
+    ] = False,
+    critic_threshold: Annotated[int, typer.Option("--critic-threshold", min=0, max=100)] = 78,
+    rewrite_passes: Annotated[int, typer.Option("--rewrite-passes", min=0, max=5)] = 2,
+    basic: Annotated[
+        bool,
+        typer.Option("--basic", help="Skip angle competition/critic/packaging stages."),
+    ] = False,
+    push_arcreel: Annotated[
+        bool,
+        typer.Option("--push-arcreel", help="Create/upload directly to ArcReel."),
+    ] = False,
+    trigger_arcreel: Annotated[
+        bool,
+        typer.Option("--trigger-arcreel", help="Push and start ArcReel /video-workflow."),
+    ] = False,
 ) -> None:
     """Run the research-to-production pipeline. ArcReel is never called unless explicitly requested."""
     load_dotenv()
@@ -84,9 +107,12 @@ def generate(
 
 @app.command("analyze-reference")
 def analyze_reference(
-    source: str = typer.Argument(..., help="YouTube URL or local video path."),
-    visual: bool = typer.Option(False, "--visual", help="Download/sample frames for multimodal analysis."),
-    output: Path = typer.Option(Path("reference-analysis.json"), "--output", "-o"),
+    source: Annotated[str, typer.Argument(help="YouTube URL or local video path.")],
+    visual: Annotated[
+        bool,
+        typer.Option("--visual", help="Download/sample frames for multimodal analysis."),
+    ] = False,
+    output: Annotated[Path, typer.Option("--output", "-o")] = DEFAULT_REFERENCE_ANALYSIS,
 ) -> None:
     """Reverse-engineer reusable hook, pacing and editing patterns from a reference video."""
     load_dotenv()
@@ -98,9 +124,9 @@ def analyze_reference(
 
 @app.command("critique-render")
 def critique_render(
-    package_json: Path = typer.Argument(..., exists=True, readable=True),
-    video: Path = typer.Argument(..., exists=True, readable=True),
-    output: Path = typer.Option(Path("post-render-critique.json"), "--output", "-o"),
+    package_json: Annotated[Path, typer.Argument(exists=True, readable=True)],
+    video: Annotated[Path, typer.Argument(exists=True, readable=True)],
+    output: Annotated[Path, typer.Option("--output", "-o")] = DEFAULT_POST_RENDER_CRITIQUE,
 ) -> None:
     """Sample the finished video and compare it with the planned short package."""
     load_dotenv()
