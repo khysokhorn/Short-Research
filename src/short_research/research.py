@@ -41,7 +41,7 @@ class WebResearcher:
                         include_comments=False,
                         include_tables=False,
                     ) or ""
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001 - third-party extractors raise heterogeneous errors
                     logger.debug("Could not extract %s: %s", url, exc)
 
                 sources.append(
