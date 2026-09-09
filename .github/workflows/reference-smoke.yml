@@ -1,0 +1,51 @@
+name: reference-smoke
+
+on:
+  push:
+    branches: ["feat/research-to-arcreel-mvp"]
+    paths:
+      - ".github/workflows/reference-smoke.yml"
+
+jobs:
+  probe-facebook-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install project
+        run: pip install -e .
+      - name: Probe Facebook Reel with yt-dlp
+        env:
+          REFERENCE_URL: "https://www.facebook.com/share/r/1GgwfBeYvX/"
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import yt_dlp
+
+          url = os.environ["REFERENCE_URL"]
+          options = {
+              "quiet": False,
+              "skip_download": True,
+              "no_warnings": False,
+          }
+          with yt_dlp.YoutubeDL(options) as ydl:
+              info = ydl.extract_info(url, download=False)
+
+          summary = {
+              "id": info.get("id"),
+              "title": info.get("title"),
+              "duration": info.get("duration"),
+              "extractor": info.get("extractor"),
+              "webpage_url": info.get("webpage_url"),
+              "uploader": info.get("uploader"),
+              "timestamp": info.get("timestamp"),
+              "description": (info.get("description") or "")[:1000],
+              "subtitles": list((info.get("subtitles") or {}).keys()),
+              "automatic_captions": list((info.get("automatic_captions") or {}).keys()),
+              "format_count": len(info.get("formats") or []),
+          }
+          print("REFERENCE_PROBE_RESULT=" + json.dumps(summary, ensure_ascii=False))
+          PY
