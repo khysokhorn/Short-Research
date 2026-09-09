@@ -7,7 +7,7 @@ on:
       - ".github/workflows/reference-smoke.yml"
 
 jobs:
-  capture-facebook-reference:
+  analyzer-facebook-reference:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,52 +18,37 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
       - name: Install project
         run: pip install -e .
-      - name: Download Facebook Reel and sample frames
+      - name: Run actual ReferenceVideoAnalyzer on Facebook Reel
         env:
           REFERENCE_URL: "https://www.facebook.com/share/r/1GgwfBeYvX/"
         run: |
-          mkdir -p reference-artifact/frames
           python - <<'PY'
-          import json
           import os
-          from pathlib import Path
-          import yt_dlp
+          from short_research.models import ReferenceVideoAnalysis
+          from short_research.video_analysis import ReferenceVideoAnalyzer
 
-          out = Path("reference-artifact")
-          url = os.environ["REFERENCE_URL"]
-          options = {
-              "quiet": False,
-              "no_warnings": False,
-              "format": "best[height<=720]/best",
-              "outtmpl": str(out / "reference.%(ext)s"),
-          }
-          with yt_dlp.YoutubeDL(options) as ydl:
-              info = ydl.extract_info(url, download=True)
-              downloaded = Path(ydl.prepare_filename(info))
+          class SmokeLLM:
+              def complete_json(self, *, system, user, schema, images=None, **kwargs):
+                  print(f"SMOKE_FRAME_COUNT={len(images or [])}")
+                  print(f"SMOKE_PROMPT_HAS_REFERENCE={os.environ['REFERENCE_URL'] in user}")
+                  return ReferenceVideoAnalysis(
+                      source="smoke",
+                      hook_summary="smoke",
+                      structure=["smoke"],
+                      pacing_notes=["smoke"],
+                      visual_patterns=["smoke"],
+                      retention_devices=["smoke"],
+                      reusable_patterns=["smoke"],
+                      avoid_copying=["smoke"],
+                  )
 
-          summary = {
-              "id": info.get("id"),
-              "title": info.get("title"),
-              "duration": info.get("duration"),
-              "extractor": info.get("extractor"),
-              "webpage_url": info.get("webpage_url"),
-              "uploader": info.get("uploader"),
-              "timestamp": info.get("timestamp"),
-              "description": info.get("description") or "",
-              "downloaded_filename": downloaded.name,
-          }
-          (out / "metadata.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
-          print("DOWNLOADED_REFERENCE=" + str(downloaded))
+          result = ReferenceVideoAnalyzer(SmokeLLM()).analyze(
+              os.environ["REFERENCE_URL"],
+              visual=True,
+              frame_count=8,
+          )
+          print("SMOKE_SOURCE=" + result.source)
+          print("SMOKE_TITLE=" + result.title[:250].replace("\n", " "))
+          print("SMOKE_DURATION=" + str(result.duration_seconds))
+          print("SMOKE_OK=true")
           PY
-          VIDEO=$(find reference-artifact -maxdepth 1 -type f \( -name 'reference.mp4' -o -name 'reference.webm' -o -name 'reference.mkv' \) | head -n1)
-          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$VIDEO" > reference-artifact/duration.txt
-          DURATION=$(cat reference-artifact/duration.txt)
-          for i in 1 2 3 4 5 6 7 8; do
-            TS=$(awk -v d="$DURATION" -v i="$i" 'BEGIN { printf "%.3f", d*((i-0.5)/8) }')
-            ffmpeg -loglevel error -ss "$TS" -i "$VIDEO" -frames:v 1 -vf "scale='min(720,iw)':-2" -y "reference-artifact/frames/frame-$(printf '%02d' $i).jpg"
-          done
-      - uses: actions/upload-artifact@v4
-        with:
-          name: facebook-reference-1GgwfBeYvX
-          path: reference-artifact
-          retention-days: 1
