@@ -7,7 +7,7 @@ on:
       - ".github/workflows/reference-smoke.yml"
 
 jobs:
-  probe-facebook-reference:
+  capture-facebook-reference:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,23 +16,28 @@ jobs:
           python-version: "3.11"
       - name: Install project
         run: pip install -e .
-      - name: Probe Facebook Reel with yt-dlp
+      - name: Download Facebook Reel and sample frames
         env:
           REFERENCE_URL: "https://www.facebook.com/share/r/1GgwfBeYvX/"
         run: |
+          mkdir -p reference-artifact/frames
           python - <<'PY'
           import json
           import os
+          from pathlib import Path
           import yt_dlp
 
+          out = Path("reference-artifact")
           url = os.environ["REFERENCE_URL"]
           options = {
               "quiet": False,
-              "skip_download": True,
               "no_warnings": False,
+              "format": "best[height<=720]/best",
+              "outtmpl": str(out / "reference.%(ext)s"),
           }
           with yt_dlp.YoutubeDL(options) as ydl:
-              info = ydl.extract_info(url, download=False)
+              info = ydl.extract_info(url, download=True)
+              downloaded = Path(ydl.prepare_filename(info))
 
           summary = {
               "id": info.get("id"),
@@ -42,10 +47,21 @@ jobs:
               "webpage_url": info.get("webpage_url"),
               "uploader": info.get("uploader"),
               "timestamp": info.get("timestamp"),
-              "description": (info.get("description") or "")[:1000],
-              "subtitles": list((info.get("subtitles") or {}).keys()),
-              "automatic_captions": list((info.get("automatic_captions") or {}).keys()),
-              "format_count": len(info.get("formats") or []),
+              "description": info.get("description") or "",
+              "downloaded_filename": downloaded.name,
           }
-          print("REFERENCE_PROBE_RESULT=" + json.dumps(summary, ensure_ascii=False))
+          (out / "metadata.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+          print("DOWNLOADED_REFERENCE=" + str(downloaded))
           PY
+          VIDEO=$(find reference-artifact -maxdepth 1 -type f \( -name 'reference.mp4' -o -name 'reference.webm' -o -name 'reference.mkv' \) | head -n1)
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$VIDEO" > reference-artifact/duration.txt
+          DURATION=$(cat reference-artifact/duration.txt)
+          for i in 1 2 3 4 5 6 7 8; do
+            TS=$(awk -v d="$DURATION" -v i="$i" 'BEGIN { printf "%.3f", d*((i-0.5)/8) }')
+            ffmpeg -loglevel error -ss "$TS" -i "$VIDEO" -frames:v 1 -vf "scale='min(720,iw)':-2" -y "reference-artifact/frames/frame-$(printf '%02d' $i).jpg"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: facebook-reference-1GgwfBeYvX
+          path: reference-artifact
+          retention-days: 1
