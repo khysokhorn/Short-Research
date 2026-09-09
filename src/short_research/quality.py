@@ -27,7 +27,7 @@ priorities. Preserve verified facts, uncertainty, requested runtime, character c
 Fix weak scenes rather than changing things that already work. Return a complete replacement package."""
 
 PACKAGING_SYSTEM = """You package YouTube Shorts for discovery without misleading clickbait. Produce meaningfully
- different factual title variants and thumbnail concepts. Thumbnail concepts must be visually legible on mobile,
+different factual title variants and thumbnail concepts. Thumbnail concepts must be visually legible on mobile,
 use minimal overlay text, and describe one clear focal image rather than a collage."""
 
 
@@ -89,8 +89,8 @@ RESEARCH:\n{json.dumps(brief.model_dump(exclude={'sources'}), ensure_ascii=False
 
     def rewrite(self, package: ShortPackage, critique: ShortCritique) -> ShortPackage:
         prompt = f"""Rewrite the package so its weakest dimensions improve materially.
-Do not change topic, duration, audience, or factual guardrails. Keep scene timing chronological and ending close to
-{package.duration_seconds} seconds. Return the entire ShortPackage.
+Do not change topic, winning hook, winning angle, payoff, duration, audience, or factual guardrails.
+Keep scene timing chronological and ending close to {package.duration_seconds} seconds. Return the entire ShortPackage.
 
 CRITIQUE:\n{critique.model_dump_json(indent=2)}
 
@@ -105,6 +105,9 @@ PACKAGE:\n{package.model_dump_json(indent=2)}
         )
         rewritten = ShortPackage.model_validate(result.model_dump())
         rewritten.topic = package.topic
+        rewritten.hook = package.hook
+        rewritten.core_angle = package.core_angle
+        rewritten.payoff = package.payoff
         rewritten.duration_seconds = package.duration_seconds
         rewritten.style = package.style
         rewritten.audience = package.audience
