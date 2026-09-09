@@ -22,10 +22,21 @@ RESEARCH_SYSTEM = """You are a research editor for factual, high-retention short
 Separate verified facts from uncertainty. Prefer surprising, visual facts that can be explained quickly.
 Never invent a fact just to make the story more dramatic. Source indices refer to the supplied source list."""
 
-SCRIPT_SYSTEM = """You are a YouTube Shorts writer and visual director.
-Optimize for retention without clickbait lies. The first 1.5 seconds must create immediate curiosity.
-Use fast escalation, pattern interrupts every few seconds, a clear payoff, and visual instructions that are
-specific enough for an AI video system. Avoid generic B-roll directions. Keep spoken narration natural."""
+SCRIPT_SYSTEM = """You are a YouTube Shorts writer, story architect, continuity supervisor, and visual director.
+Optimize for retention without clickbait lies. The first 1.5 seconds must create immediate curiosity or danger.
+Use fast escalation, clear cause-and-effect, pattern interrupts every few seconds, a real payoff, and visual
+instructions specific enough for an AI image/video system. Avoid generic B-roll directions. For narrated factual
+stories keep spoken narration natural. For silent visual stories, make the plot completely understandable without
+narration, captions, or on-screen text."""
+
+SILENT_RESCUE_CONTINUITY_RULES = [
+    "Keep the exact same named characters, count, markings, proportions, clothing and colors throughout.",
+    "Each scene begins from the physical state and geography where the previous scene ended.",
+    "Keep travel direction and landmark positions consistent unless a visible turn or camera reversal is shown.",
+    "Objects used to solve a problem must already exist in the established geography before they are used.",
+    "Every important action must create a visible consequence that motivates the next beat.",
+    "No teleporting, duplicate characters, disappearing characters, miracle solutions, montage, or unexplained time jump.",
+]
 
 
 class ShortResearchPipeline:
@@ -174,11 +185,36 @@ MANDATORY OPENING HOOK: {selected_hook.text}
 VISUAL ENGINE: {selected_angle.visual_engine}
 """
 
+        story_mode = "silent_story" if preset and preset.name == "silent-rescue" else "factual_narrated"
+        continuity_instruction = """
+STORY LOGIC + CONTINUITY CONTRACT:
+- Fill start_state, obstacle, decision, action, consequence and end_state for every action-driven scene.
+- The WHY-NEXT test must pass: Scene N+1 should happen because of Scene N, not merely because the writer moves on.
+- Scene N+1.start_state must be physically compatible with Scene N.end_state.
+- Keep characters_present accurate. Never silently add, remove, duplicate, merge or redesign recurring characters.
+- Keep location, character_positions and screen_direction explicit enough to prevent teleporting and camera-side flips.
+- Establish useful objects and landmarks before a character relies on them.
+- Show the visible consequence of every important action instead of jumping directly to the result.
+- Put stable global geography into location_map and stable production rules into continuity_rules.
+"""
+        if story_mode == "silent_story":
+            continuity_instruction += """
+SILENT STORY CONTRACT:
+- The full story must be understandable with audio muted.
+- narration and every scene narration must be empty strings.
+- on_screen_text must be empty; do not use captions as a storytelling crutch.
+- Show the danger and the hero's protect/save goal in the opening visual beat.
+- Use obstacle -> decision -> action -> consequence as the physical engine of each beat.
+- Include a motivated near-failure or second uncertainty before the final emotional resolution.
+- End with a visually verifiable safety/payoff state; do not rely on narration to explain that everyone is safe.
+"""
+
         prompt = f"""Turn this research brief into a {duration_seconds}-second vertical YouTube Short.
 
 STYLE: {style}
 AUDIENCE: {audience}
 FORMAT: 9:16
+STORY MODE: {story_mode}
 {selected_instruction}
 Rules:
 - Hook must work in roughly 1.5 seconds.
@@ -186,10 +222,12 @@ Rules:
 - Give every scene a concrete visual direction and camera instruction.
 - Add a retention device or pattern interrupt about every 3-6 seconds.
 - Scene times must start at 0, be chronological, and end close to {duration_seconds} seconds.
-- Narration should fit the requested duration; do not stuff excessive words into the runtime.
+- Narration should fit the requested duration when narration is used; do not stuff excessive words into the runtime.
 - Preserve uncertainty from the research brief.
 - Do not include unsupported facts.
 - youtube_title should be compelling but factual.
+
+{continuity_instruction}
 
 RESEARCH BRIEF:\n{brief_json}"""
         if preset:
@@ -213,11 +251,21 @@ RESEARCH BRIEF:\n{brief_json}"""
         package.style = style
         package.audience = audience
         package.research = brief
+        package.story_mode = story_mode
         if selected_hook is not None:
             package.hook = selected_hook.text
         if selected_angle is not None:
             package.core_angle = selected_angle.premise
             package.payoff = selected_angle.payoff
+
+        if story_mode == "silent_story":
+            package.narration = ""
+            for scene in package.scenes:
+                scene.narration = ""
+                scene.on_screen_text = ""
+            if not package.continuity_rules:
+                package.continuity_rules = list(SILENT_RESCUE_CONTINUITY_RULES)
+
         return package
 
 
@@ -280,11 +328,21 @@ def to_arcreel_screenplay(package: ShortPackage) -> str:
         f"**Format:** YouTube Short · 9:16 · {package.duration_seconds}s",
         f"**Style:** {package.style}",
         f"**Audience:** {package.audience}",
+        f"**Story mode:** {package.story_mode}",
         f"**Core angle:** {package.core_angle}",
         f"**Hook:** {package.hook}",
         f"**Payoff:** {package.payoff}",
         "",
     ]
+
+    if package.location_map or package.continuity_rules:
+        lines.extend(["## Continuity Bible", ""])
+        if package.location_map:
+            lines.extend(["### Location Map", package.location_map, ""])
+        if package.continuity_rules:
+            lines.append("### Global Rules")
+            lines.extend(f"- {rule}" for rule in package.continuity_rules)
+            lines.append("")
 
     if package.characters:
         lines.extend(["## Cast", ""])
@@ -292,16 +350,27 @@ def to_arcreel_screenplay(package: ShortPackage) -> str:
             lines.extend([
                 f"### {character.name} — {character.role}",
                 character.visual_description,
+                f"**Immutable ID:** {character.immutable_id}" if character.immutable_id else "",
                 f"**Consistency:** {character.consistency_notes}" if character.consistency_notes else "",
                 "",
             ])
 
-    lines.extend(["## Full Narration", "", package.narration, "", "## Scene Breakdown", ""])
+    lines.extend(["## Full Narration", "", package.narration or "None — silent visual story", "", "## Scene Breakdown", ""])
     for scene in package.scenes:
         lines.extend([
             f"### Scene {scene.index} — {scene.start_second:.1f}s to {scene.end_second:.1f}s",
             f"**Purpose:** {scene.purpose}",
-            f"**Narration:** {scene.narration}",
+            f"**Start state:** {scene.start_state or 'Not specified'}",
+            f"**Obstacle:** {scene.obstacle or 'None'}",
+            f"**Decision:** {scene.decision or 'Not specified'}",
+            f"**Action:** {scene.action or 'Not specified'}",
+            f"**Consequence:** {scene.consequence or 'Not specified'}",
+            f"**End state:** {scene.end_state or 'Not specified'}",
+            f"**Characters present:** {', '.join(scene.characters_present) if scene.characters_present else 'Not specified'}",
+            f"**Character positions:** {scene.character_positions or 'Not specified'}",
+            f"**Location:** {scene.location or 'Not specified'}",
+            f"**Screen direction:** {scene.screen_direction or 'Not specified'}",
+            f"**Narration:** {scene.narration or 'None'}",
             f"**Visual:** {scene.visual_direction}",
             f"**Camera:** {scene.camera}",
             f"**On-screen text:** {scene.on_screen_text or 'None'}",
