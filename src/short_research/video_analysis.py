@@ -38,7 +38,8 @@ class ReferenceVideoAnalyzer:
             title = path.stem
             duration = _duration_from_probe(metadata)
         elif source.startswith(("https://", "http://")):
-            metadata, transcript, downloaded = self._youtube_context(source, visual=visual)
+            raw_metadata, transcript, downloaded = self._youtube_context(source, visual=visual)
+            metadata = self._compact_youtube_metadata(raw_metadata)
             frames = extract_frames(downloaded, frame_count=frame_count) if downloaded else []
             title = str(metadata.get("title") or source)
             duration = _safe_float(metadata.get("duration"))
@@ -100,12 +101,40 @@ class ReferenceVideoAnalyzer:
         return info, transcript, downloaded
 
     @staticmethod
+    def _compact_youtube_metadata(info: dict[str, Any]) -> dict[str, Any]:
+        keys = (
+            "id",
+            "title",
+            "description",
+            "duration",
+            "channel",
+            "uploader",
+            "view_count",
+            "like_count",
+            "comment_count",
+            "upload_date",
+            "timestamp",
+            "categories",
+            "tags",
+            "webpage_url",
+        )
+        compact = {key: info.get(key) for key in keys if info.get(key) is not None}
+        if isinstance(compact.get("description"), str):
+            compact["description"] = compact["description"][:3000]
+        if isinstance(compact.get("tags"), list):
+            compact["tags"] = compact["tags"][:30]
+        return compact
+
+    @staticmethod
     def _caption_text(info: dict[str, Any]) -> str:
         tracks = info.get("subtitles") or info.get("automatic_captions") or {}
         candidates = tracks.get("en") or tracks.get("en-US") or next(iter(tracks.values()), [])
         if not candidates:
             return ""
-        preferred = next((item for item in candidates if item.get("ext") in {"vtt", "srv3", "json3"}), candidates[0])
+        preferred = next(
+            (item for item in candidates if item.get("ext") in {"vtt", "srv3", "json3"}),
+            candidates[0],
+        )
         url = preferred.get("url")
         if not url:
             return ""
