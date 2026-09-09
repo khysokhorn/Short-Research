@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "short-research"
-version = "0.1.0"
-description = "Research-to-script pipeline for high-retention YouTube Shorts with ArcReel export."
+version = "0.2.0"
+description = "Research-to-script pipeline for high-retention YouTube Shorts with critique, reference analysis and ArcReel export."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -15,6 +15,7 @@ dependencies = [
   "python-dotenv>=1.0.1",
   "trafilatura>=2.0.0",
   "typer>=0.15.0",
+  "yt-dlp>=2025.1.0",
 ]
 
 [project.optional-dependencies]
