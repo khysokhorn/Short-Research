@@ -1,0 +1,54 @@
+{
+  "source": "https://www.facebook.com/share/r/1GgwfBeYvX/",
+  "title": "Fern Cloak — animated mother-rescue short",
+  "duration_seconds": 30.041,
+  "hook_summary": "The video opens directly on vulnerable young animals being swept into fast-moving water, then cuts within a few seconds to the mother's shocked reaction. The viewer understands the danger before receiving any explanation.",
+  "structure": [
+    "0–3s: Show the vulnerable characters entering immediate physical danger.",
+    "4–5s: Extreme reaction close-up establishes the parent's emotional stakes.",
+    "6–16s: The parent commits instantly and struggles through the water to rescue the young; action escalates without explanatory detours.",
+    "17–20s: Apparent rescue and emotional pause.",
+    "21–24s: A new character enters, creating a second uncertainty after the first problem appears solved.",
+    "25–28s: The staging reveals the young safe and reframes the newcomer as a helper rather than a new threat.",
+    "29–30s: Warm close-up of parent and young gives a clean emotional release."
+  ],
+  "pacing_notes": [
+    "The central danger is visible in the first frame.",
+    "Major beat changes occur roughly every 2–5 seconds.",
+    "Reaction close-ups are short and are immediately followed by action.",
+    "The middle is sustained physical movement rather than exposition.",
+    "An apparent resolution around two-thirds of the runtime is followed by a second uncertainty/twist.",
+    "The final seconds slow down and warm visually to make relief feel earned."
+  ],
+  "visual_patterns": [
+    "Alternate wide shots that explain geography with close-ups that carry emotion.",
+    "Use exaggerated but readable facial expressions and clear silhouettes.",
+    "Keep environmental motion active across rescue shots so the middle never feels static.",
+    "Keep vulnerable characters visually grouped so the audience can track who still needs help.",
+    "Shift from cooler chaotic imagery to warm golden backlight for the resolution.",
+    "Make the story legible without dialogue or on-screen text."
+  ],
+  "retention_devices": [
+    "Danger-first cold open.",
+    "Immediate emotional reaction shot.",
+    "Protagonist commits to action within the first quarter.",
+    "Continuous escalation during the rescue.",
+    "False resolution before a second uncertainty.",
+    "Late recontextualization of a seemingly threatening new character.",
+    "Emotional close-up payoff."
+  ],
+  "reusable_patterns": [
+    "Start with the consequence/problem already happening, then reveal the protagonist's reaction.",
+    "Use a simple protect/save goal that can be understood silently.",
+    "Alternate action and reaction instead of explaining the story with narration.",
+    "Resolve the first crisis before introducing one final uncertainty.",
+    "Let the last reveal change the audience's interpretation of the previous beat.",
+    "End on a slower emotional image after a fast middle section."
+  ],
+  "avoid_copying": [
+    "Do not reuse the mother hen, chicks, heron, river-rescue plot, exact shot order, poses, or distinctive character designs.",
+    "Do not imitate an exact named studio style; use a generic polished expressive 3D family-animation direction instead.",
+    "Borrow only abstract pacing, tension, reaction/action alternation, false-resolution, and emotional-payoff patterns."
+  ],
+  "transcript_excerpt": ""
+}

@@ -1,0 +1,185 @@
+{
+  "topic": "Why your brain freezes when you eat ice cream too fast",
+  "working_title": "Brain Freeze Emergency",
+  "youtube_title": "Your Brain Isn't Actually Freezing 🤯",
+  "hook": "That stabbing ice-cream headache? Your brain is NOT freezing.",
+  "payoff": "The likely trigger starts in your mouth, gets relayed as referred head pain, and usually fades quickly; warming the roof of your mouth and slowing down may help.",
+  "core_angle": "A harmless mouth-temperature emergency gets misread by the nervous system as a stabbing forehead headache.",
+  "style": "funny microscopic body disaster",
+  "audience": "general YouTube Shorts audience",
+  "duration_seconds": 45,
+  "narration": "That stabbing ice-cream headache? Your brain is not actually freezing. The trouble starts when extreme cold suddenly hits the roof of your mouth and throat. One leading explanation says nearby blood vessels tighten, then rapidly reopen. Pain receptors panic and fire signals into the trigeminal nerve. Here's the weird part: your brain can read that mouth signal as if the pain came from your forehead. So inside your head, a tiny harmless temperature change gets promoted into a full emergency alarm. It usually disappears within seconds or a couple of minutes. Want to fight back? Slow down, stop the cold bite, and warm the roof of your mouth with your tongue.",
+  "characters": [
+    {
+      "name": "RUMI",
+      "role": "Ice Cream Victim",
+      "visual_description": "Young woman at a bright dessert bar holding an oversized scoop of ice cream; expressive face, casual modern outfit, consistent hairstyle and clothing in every exterior shot.",
+      "consistency_notes": "Keep the same face, hairstyle, outfit and ice-cream cup across all exterior scenes."
+    },
+    {
+      "name": "MICRO NERVE CREW",
+      "role": "Microscopic Emergency Team",
+      "visual_description": "Tiny fluorescent-orange-suited workers inside a stylized biological mouth-and-nerve world, operating temperature gauges, vascular valves and a glowing trigeminal-nerve control board.",
+      "consistency_notes": "Same orange suits, white helmets and control-room design throughout microscopic scenes; comedic behavior, not medically literal anatomy."
+    }
+  ],
+  "scenes": [
+    {
+      "index": 1,
+      "start_second": 0.0,
+      "end_second": 2.0,
+      "purpose": "Immediate contradiction hook.",
+      "narration": "That stabbing ice-cream headache? Your brain is not actually freezing.",
+      "visual_direction": "Rumi takes a huge bite of ice cream, instantly grabs her forehead; freeze-frame with a dramatic transparent head cutaway showing the brain completely unfrozen while a giant red 'NOT THE BRAIN' stamp slams on screen.",
+      "camera": "Extreme close-up on bite, whip-zoom to forehead, then fast x-ray-style cutaway.",
+      "on_screen_text": "YOUR BRAIN ISN'T FREEZING",
+      "sound_design": "Crunch, record scratch, bass impact.",
+      "transition": "Rapid tunnel zoom through Rumi's face into her mouth.",
+      "retention_device": "Contradict a familiar belief in the first two seconds."
+    },
+    {
+      "index": 2,
+      "start_second": 2.0,
+      "end_second": 7.0,
+      "purpose": "Reveal where the event begins.",
+      "narration": "The trouble starts when extreme cold suddenly hits the roof of your mouth and throat.",
+      "visual_direction": "Camera races through a stylized mouth canyon as a wave of blue frost sweeps across the palate; tiny workers look up from gauges as the temperature needle crashes downward.",
+      "camera": "Fast macro fly-through ending on a wide microscopic control-room shot.",
+      "on_screen_text": "TRIGGER: MOUTH + THROAT",
+      "sound_design": "Wind rush, frost crackle, warning beep.",
+      "transition": "Alarm light flashes full-frame red, becoming the next vascular scene.",
+      "retention_device": "Scale shift from normal world to microscopic disaster world."
+    },
+    {
+      "index": 3,
+      "start_second": 7.0,
+      "end_second": 13.0,
+      "purpose": "Explain the leading vascular theory while preserving uncertainty.",
+      "narration": "One leading explanation says nearby blood vessels tighten, then rapidly reopen.",
+      "visual_direction": "Micro workers crank huge valve wheels; flexible red vessel tunnels visibly narrow, then rebound open like spring-loaded hoses, knocking workers backward.",
+      "camera": "Side-tracking shot following the vessel narrowing, then snap zoom on the rebound.",
+      "on_screen_text": "LEADING THEORY",
+      "sound_design": "Metal valve squeak, rubber tension, comic BOING.",
+      "transition": "The rebound shockwave travels toward a glowing nerve cable.",
+      "retention_device": "Physical-comedy escalation plus explicit uncertainty label."
+    },
+    {
+      "index": 4,
+      "start_second": 13.0,
+      "end_second": 19.0,
+      "purpose": "Connect the vascular change to pain signaling.",
+      "narration": "Pain receptors panic and fire signals into the trigeminal nerve.",
+      "visual_direction": "Red warning nodes around the vessels light up; the micro crew slams an oversized emergency button and a bright electrical pulse rockets into a branching golden nerve highway.",
+      "camera": "Macro close-up on receptors, then chase-camera following the pulse.",
+      "on_screen_text": "PAIN SIGNAL → TRIGEMINAL NERVE",
+      "sound_design": "Siren chirp, electric zap accelerating into a whoosh.",
+      "transition": "Follow the pulse through a dark nerve tunnel toward the head map.",
+      "retention_device": "Speed ramp and glowing signal chase."
+    },
+    {
+      "index": 5,
+      "start_second": 19.0,
+      "end_second": 26.0,
+      "purpose": "Deliver the surprising referred-pain explanation.",
+      "narration": "Here's the weird part: your brain can read that mouth signal as if the pain came from your forehead.",
+      "visual_direction": "Inside a ridiculous nerve dispatch center, a glowing map marks 'MOUTH' as the source, but a confused worker stamps the incoming alarm 'FOREHEAD' and sends it to the wrong giant screen.",
+      "camera": "Over-the-shoulder on the source map, smash cut to the incorrect FOREHEAD destination.",
+      "on_screen_text": "REFERRED PAIN",
+      "sound_design": "Scanner beep, wrong-answer buzzer, stamp slam.",
+      "transition": "The FOREHEAD screen becomes Rumi's real forehead outside.",
+      "retention_device": "Comedic misrouting metaphor that explains the core fact visually."
+    },
+    {
+      "index": 6,
+      "start_second": 26.0,
+      "end_second": 33.0,
+      "purpose": "Show the disproportionate reaction.",
+      "narration": "So inside your head, a tiny harmless temperature change gets promoted into a full emergency alarm.",
+      "visual_direction": "Cut outside: Rumi freezes mid-bite clutching her forehead. Cut inside: micro workers sprint under flashing lights while one worker calmly holds a tiny sign reading 'HARMLESS.'",
+      "camera": "Alternating punch-in cuts between Rumi and chaotic microscopic crew.",
+      "on_screen_text": "BIG PAIN. TINY EMERGENCY.",
+      "sound_design": "Overblown emergency siren abruptly interrupted by a tiny bell.",
+      "transition": "Siren powers down and lights dim.",
+      "retention_device": "Contrast between dramatic pain and harmless cause."
+    },
+    {
+      "index": 7,
+      "start_second": 33.0,
+      "end_second": 39.0,
+      "purpose": "Reassure and resolve the tension.",
+      "narration": "It usually disappears within seconds or a couple of minutes.",
+      "visual_direction": "A giant countdown clock inside the mouth spins rapidly toward zero while the blue frost recedes and Rumi's expression relaxes outside.",
+      "camera": "Time-lapse close-up on countdown, soft pull-back to Rumi.",
+      "on_screen_text": "USUALLY OVER QUICKLY",
+      "sound_design": "Fast ticking slowing into a soft chime.",
+      "transition": "Rumi looks suspiciously at the remaining ice cream, then raises one finger.",
+      "retention_device": "Fast visual countdown promises immediate practical payoff."
+    },
+    {
+      "index": 8,
+      "start_second": 39.0,
+      "end_second": 45.0,
+      "purpose": "Give the useful payoff and memorable ending.",
+      "narration": "Want to fight back? Slow down, stop the cold bite, and warm the roof of your mouth with your tongue.",
+      "visual_direction": "Split-screen: left side shows Rumi shoveling ice cream too fast under a red X; right side shows her taking a small bite slowly, then pressing her tongue to the roof of her mouth as the micro crew switches the alarm from red to green.",
+      "camera": "Clean locked split-screen, ending on a fast push-in to the green SAFE light.",
+      "on_screen_text": "SLOW DOWN + WARM THE ROOF",
+      "sound_design": "Error buzz on left, success ding on right, cheerful button click.",
+      "transition": "End card snap.",
+      "retention_device": "Actionable tip plus visual before/after comparison."
+    }
+  ],
+  "youtube_description": "Brain freeze feels like your brain is being stabbed with ice — but the trigger actually starts in your mouth. Here's the leading explanation for why cold food can suddenly feel like forehead pain, plus a simple way to reduce it.",
+  "hashtags": [
+    "#BrainFreeze",
+    "#Science",
+    "#FunFact",
+    "#YouTubeShorts",
+    "#HumanBody"
+  ],
+  "research": {
+    "topic": "Why your brain freezes when you eat ice cream too fast",
+    "core_angle": "A harmless mouth-temperature emergency gets misread by the nervous system as a stabbing forehead headache.",
+    "key_facts": [
+      "Brain freeze is a cold-stimulus headache triggered by sudden exposure to very cold food or drink. [1][2][3]",
+      "The pain is usually brief and commonly felt in the forehead or temples. [1][2]",
+      "A leading explanation is that sudden cooling near the roof of the mouth/back of the throat causes rapid blood-vessel changes that activate pain receptors. [1][2][3]",
+      "Pain signals can travel through the trigeminal nerve and be perceived as coming from the head rather than the mouth, a form of referred pain. [1]",
+      "Brain freeze is generally harmless and resolves on its own. [1][2][3]",
+      "Eating cold foods more slowly can reduce the chance of triggering it. [1][3]"
+    ],
+    "surprising_facts": [
+      "The ice cream is not literally freezing the brain; the trigger begins in the mouth/throat. [1][2]",
+      "The brain can interpret a mouth/throat cold-pain signal as pain in the forehead. [1]",
+      "Pressing the tongue against the roof of the mouth is commonly suggested to warm the area. [1][2]"
+    ],
+    "stakes_or_tension": [
+      "The pain can arrive almost instantly even though the event is harmless.",
+      "The body's attempt to react to sudden cold creates a comically disproportionate alarm response."
+    ],
+    "uncertainties": [
+      "The exact biological mechanism of brain freeze is still debated; present vascular changes plus trigeminal/referred-pain signaling as a leading explanation, not absolute certainty. [1]",
+      "Do not claim that the brain tissue itself becomes cold or freezes."
+    ],
+    "sources": [
+      {
+        "title": "What happens during a brain freeze and is it harmful?",
+        "url": "https://www.health.harvard.edu/pain/what-happens-during-a-brain-freeze-and-is-it-harmful",
+        "snippet": "Harvard Health overview of cold-stimulus headache, referred pain, duration and prevention.",
+        "extracted_text": "Omitted from the committed example; see 01-research-sources.md for summarized research notes."
+      },
+      {
+        "title": "Brain Freeze: what it is, symptoms, treatment",
+        "url": "https://my.clevelandclinic.org/health/diseases/21478-brain-freeze",
+        "snippet": "Cleveland Clinic overview of symptoms, triggers, vessel changes and warming strategies.",
+        "extracted_text": "Omitted from the committed example; see 01-research-sources.md for summarized research notes."
+      },
+      {
+        "title": "Mayo Clinic Minute: Ice cream brain freeze, it's a real thing",
+        "url": "https://newsnetwork.mayoclinic.org/discussion/mayo-clinic-minute-ice-cream-brain-freeze-its-a-real-thing/",
+        "snippet": "Mayo Clinic neurologist describes cold-stimulus headache and rapid blood-vessel changes.",
+        "extracted_text": "Omitted from the committed example; see 01-research-sources.md for summarized research notes."
+      }
+    ]
+  }
+}
