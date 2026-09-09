@@ -139,18 +139,28 @@ class ReferenceVideoAnalyzer:
         if not url:
             return ""
         try:
-            text = httpx.get(url, timeout=15.0, follow_redirects=True).text
-        except Exception:
+            response = httpx.get(url, timeout=15.0, follow_redirects=True)
+            response.raise_for_status()
+            text = response.text
+        except httpx.HTTPError:
             return ""
+
         if preferred.get("ext") == "json3":
             try:
                 data = json.loads(text)
-                pieces = []
-                for event in data.get("events", []):
-                    pieces.extend(seg.get("utf8", "") for seg in event.get("segs", []))
+            except (json.JSONDecodeError, TypeError):
+                data = {}
+            pieces: list[str] = []
+            for event in data.get("events", []):
+                if isinstance(event, dict):
+                    pieces.extend(
+                        seg.get("utf8", "")
+                        for seg in event.get("segs", [])
+                        if isinstance(seg, dict)
+                    )
+            if pieces:
                 return " ".join(pieces)
-            except Exception:
-                pass
+
         text = re.sub(r"WEBVTT.*?\n", "", text, flags=re.DOTALL)
         text = re.sub(r"\d{2}:\d{2}[^\n]*-->[^\n]*", "", text)
         text = re.sub(r"<[^>]+>", "", text)
